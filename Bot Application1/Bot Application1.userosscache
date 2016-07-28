@@ -1,0 +1,8 @@
+ProjectItem:c:\users\patiwari\documents\visual studio 2015\Projects\Bot Application1\Bot Application1\Properties\PublishProfiles\MyDummyApp - Web Deploy.pubxml
+ProjectItem:c:\users\patiwari\documents\visual studio 2015\Projects\Bot Application1\Bot Application1\TaskReminder.cs
+ProjectItem:c:\users\patiwari\documents\visual studio 2015\Projects\Bot Application1\Bot Application1\MessageParser.cs
+ProjectItem:c:\users\patiwari\documents\visual studio 2015\Projects\Bot Application1\Bot Application1\Frequency.cs
+ProjectItem:c:\users\patiwari\documents\visual studio 2015\Projects\Bot Application1\Bot Application1\ToDoItemCommand.cs
+ProjectItem:c:\users\patiwari\documents\visual studio 2015\Projects\Bot Application1\Bot Application1\ToDoItemsManager.cs
+ProjectItem:c:\users\patiwari\documents\visual studio 2015\Projects\Bot Application1\Bot Application1\TaskReminderTimer.cs
+ProjectItem:c:\users\patiwari\documents\visual studio 2015\Projects\Bot Application1\Bot Application1\IntentCommand.cs
