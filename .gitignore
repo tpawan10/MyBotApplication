@@ -57,3 +57,6 @@
 /Bot Application1/bin/Microsoft.WindowsAzure.Storage.pdb
 /Bot Application1/bin/Microsoft.WindowsAzure.Storage.xml
 /Bot Application1/bin/Microsoft.Data.OData.xml
+/Bot Application1/bin
+/BotTests/obj/Debug
+/BotTests/bin/Debug

@@ -81,7 +81,7 @@ namespace Bot_Application1
         public override async Task<string> Execute()
         {
             ToDoItemsManager.AddToDoItem(this.UserId, this.itemToAdd);
-            return this.itemToAdd.Title + " was added";
+            return await MessageParser.GetAwaitable(this.itemToAdd.Title + " was added");
         }
 
         private static bool TryCreateToDoItem(string userId, IList<EntityRecommendation> entities, out ToDoItem expectedItem)
@@ -212,10 +212,10 @@ namespace Bot_Application1
                         items[i].Title,
                         items[i].Status == ToDoItemStatus.Done ? "#" : string.Empty);
                 }
-                return sb.ToString();
+                return await MessageParser.GetAwaitable(sb.ToString());
             }
 
-            return "#No task found";
+            return await MessageParser.GetAwaitable("#No task found");
         }
     }
 
@@ -241,7 +241,7 @@ namespace Bot_Application1
                 StorageManager.UpdateToDoItem(item);
             }
 
-            return "Your task completion was marked successfully.";
+            return await MessageParser.GetAwaitable("Your task completion was marked successfully.");
         }
     }
 
@@ -263,7 +263,7 @@ namespace Bot_Application1
         public override async Task<string> Execute()
         {
             ToDoItemsManager.RemoveItems(this.UserId, this.itemsToRemove);
-            return "Your task completion was marked successfully.";
+            return await MessageParser.GetAwaitable("Your task completion was marked successfully.");
         }
     }
 }
