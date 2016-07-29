@@ -37,7 +37,7 @@ namespace Bot_Application1
             this.text = text;
         }
 
-        public override async Task<string> Execute()
+        public override string Execute()
         {
             return "I did not understand your command.";
         }
@@ -63,7 +63,7 @@ namespace Bot_Application1
             if (CreateToDoCommand.ValidateIntent(result.Intents))
             {
                 ToDoItem expectedItem;
-                if (CreateToDoCommand.TryCreateToDoItem(result.Entities, out expectedItem))
+                if (CreateToDoCommand.TryCreateToDoItem(userId, result.Entities, out expectedItem))
                 {
                     expectedItem.SetCommunicationInformation(
                         new CommunicationInfo() { ServiceUri = url, From = from, Recipient = recipient });
@@ -81,13 +81,13 @@ namespace Bot_Application1
             this.itemToAdd = itemToAdd;
         }
 
-        public override async Task<string> Execute()
+        public override string Execute()
         {
             ToDoItemsManager.AddToDoItem(this.UserId, this.itemToAdd);
             return this.itemToAdd.Title + " was added";
         }
 
-        private static bool TryCreateToDoItem(IList<EntityRecommendation> entities, out ToDoItem expectedItem)
+        private static bool TryCreateToDoItem(string userId, IList<EntityRecommendation> entities, out ToDoItem expectedItem)
         {
             expectedItem = null;
             if (entities != null && entities.Count != 0)
@@ -114,7 +114,7 @@ namespace Bot_Application1
                     {
                         finalDateTime = DateTime.Today.AddHours(8);
                         frequency = TimeSpan.FromDays(1);
-                        expectedItem = new ToDoItem(text, finalDateTime.Value, frequency);
+                        expectedItem = new ToDoItem(userId, text, finalDateTime.Value, frequency);
                         return true;
                     }
                     if (setDate[0]["set"].StartsWith("xxxx-xx-xx", StringComparison.OrdinalIgnoreCase))
@@ -123,7 +123,7 @@ namespace Bot_Application1
                         {
                             finalDateTime = DateTime.Today.AddHours(hours).AddMinutes(mins);
                             frequency = TimeSpan.FromDays(1);
-                            expectedItem = new ToDoItem(text, finalDateTime.Value, frequency);
+                            expectedItem = new ToDoItem(userId, text, finalDateTime.Value, frequency);
                             return true;
                         }
                     }
@@ -154,7 +154,7 @@ namespace Bot_Application1
                     }
                 }
 
-                expectedItem = new ToDoItem(title: text, nextRemind: finalDateTime.Value, remindInterval: frequency);
+                expectedItem = new ToDoItem(userId, title: text, nextRemind: finalDateTime.Value, remindInterval: frequency);
                 return true;
             }
 
@@ -196,25 +196,25 @@ namespace Bot_Application1
             this.taskStatusToShow = status;
         }
 
-        public override async Task<string> Execute()
+        public override string Execute()
         {
-            ToDoItem[] items = ToDoItemsManager.GetToDoItemsForUser(this.UserId, this.taskStatusToShow).ToArray();
+            ToDoItem[] items = ToDoItemsManager.GetToDoItemsForUser(this.UserId).ToArray();
 
-            if (items != null && items.Length != 0)
+            if (items.Length != 0)
             {
                 StringBuilder sb = new StringBuilder();
                 for (int i = 0; i < items.Length; i++)
                 {
-                    sb.Append("Item ");
-                    sb.Append(i + 1);
-                    sb.Append(": ");
-                    sb.Append(items[i].Title);
-                    sb.Append("\n\n");
+                    sb.AppendFormat(
+                        "{2}Item {0}: {1}\n\n",
+                        i + 1,
+                        items[i].Title,
+                        items[i].Status == ToDoItemStatus.Done ? "#" : string.Empty);
                 }
                 return sb.ToString();
             }
 
-            return "No task found";
+            return "#No task found";
         }
     }
 
@@ -232,11 +232,12 @@ namespace Bot_Application1
             }
         }
 
-        public override async Task<string> Execute()
+        public override string Execute()
         {
             foreach (ToDoItem item in this.itemsCompleted)
             {
                 item.UpdateStatus(ToDoItemStatus.Done);
+                StorageManager.UpdateToDoItem(item);
             }
 
             return "Your task completion was marked successfully.";
@@ -258,10 +259,9 @@ namespace Bot_Application1
             }
         }
 
-        public override async Task<string> Execute()
+        public override string Execute()
         {
             ToDoItemsManager.RemoveItems(this.UserId, this.itemsToRemove);
-
             return "Your task completion was marked successfully.";
         }
     }

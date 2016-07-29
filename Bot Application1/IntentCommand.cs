@@ -13,7 +13,7 @@ namespace Bot_Application1
 {
     public abstract class IntentCommand
     {
-        public abstract Task<string> Execute();
+        public abstract string Execute();
     }
 
     public class GreetingIntentCommand : IntentCommand
@@ -36,11 +36,9 @@ namespace Bot_Application1
             this.userName = userName;
         }
 
-        public override Task<string> Execute()
+        public override string Execute()
         {
-            Task<string> task = new Task<string>(() => string.Format(Greetings[random.Next(0, Greetings.Length)], this.userName));
-            task.Start();
-            return task;
+            return string.Format(Greetings[random.Next(0, Greetings.Length)], this.userName);
         }
     }
 
@@ -76,16 +74,13 @@ namespace Bot_Application1
             }
         }
 
-        public override Task<string> Execute()
+        public override string Execute()
         {
             string responseWho = SimpleQuestionIntentCommand.GetResponseWho(this.who);
             string responseVerbNoun;
-            Task<string> replyTask;
             if (!SimpleQuestionIntentCommand.TryGetResponseVerbNoun(this.verb, this.noun, out responseVerbNoun))
             {
-                replyTask = new Task<string>(() => "I did not understand your question: QuestionIntent");
-                replyTask.Start();
-                return replyTask;
+                return "I did not understand your question: QuestionIntent";
             }
 
             Dictionary<string, Dictionary<string, List<string>>> possibleResponses = new Dictionary
@@ -115,10 +110,7 @@ namespace Bot_Application1
 
             string responseAction = SimpleQuestionIntentCommand.GetResponseAction(this.question, responseVerbNoun, possibleResponses);
 
-            string reply = string.Format("{0} {1} {2}", responseWho, responseVerbNoun, responseAction); // who , verb, noun
-            replyTask = new Task<string>(() => reply);
-            replyTask.Start();
-            return replyTask;
+            return string.Format("{0} {1} {2}", responseWho, responseVerbNoun, responseAction); // who , verb, noun
         }
 
         private static string GetResponseAction(string question, string responseVerbNoun, Dictionary<string, Dictionary<string, List<string>>> possibleResponses)
@@ -169,6 +161,23 @@ namespace Bot_Application1
             }
 
             return who;
+        }
+    }
+
+    public class WeatherQuestionIntentCommand : IntentCommand
+    {
+        //private string cityName;
+        //private DateTime timeRange;
+
+        public static bool TryGetCommand(LuisResult result, out IntentCommand command)
+        {
+            command = null;
+            return false;
+        }
+
+        public override string Execute()
+        {
+            throw new NotImplementedException();
         }
     }
 }

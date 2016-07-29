@@ -21,13 +21,13 @@ namespace Bot_Application1
                 ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
 
                 MessageParser parser = new MessageParser();
-                IntentCommand command = await parser.GetTaskReminder(
+                IntentCommand command = await parser.GetIntentCommand(
                     string.Format("{0}_{1}", activity.From.Id, activity.ChannelId),
                     activity.Text,
                     activity.ServiceUrl,
                     activity.From,
                     activity.Recipient);
-                string result = await command.Execute();
+                string result = command.Execute();
 
                 // return our reply to the user
                 Activity reply = activity.CreateReply(result);
@@ -50,6 +50,7 @@ namespace Bot_Application1
             }
             else if (message.Type == ActivityTypes.ConversationUpdate)
             {
+                // A change in local branch.
                 // Handle conversation state changes, like members being added and removed
                 // Use Activity.MembersAdded and Activity.MembersRemoved and Activity.Action for info
                 // Not available in all channels

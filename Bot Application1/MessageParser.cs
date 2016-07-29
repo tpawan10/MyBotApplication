@@ -23,7 +23,7 @@ namespace Bot_Application1
             MessageParser.MyAppService = new LuisService(new LuisModelAttribute("72e18abc-39ba-4f8c-aeee-e5ea9719b88c", "830b9b434d73481492b5dadc9be1f279"));
         }
 
-        public async Task<IntentCommand> GetTaskReminder(
+        public async Task<IntentCommand> GetIntentCommand(
             string userId,
             string message,
             string serviceUri,
@@ -60,6 +60,10 @@ namespace Bot_Application1
             {
                 case "builtin.intent.reminder.create_single_reminder":
                     foundMatchingIntent = CreateToDoCommand.TryGetCommand(userId, message, serviceUri, from, recipient, result, out command);
+                    break;
+
+                case "builtin.intent.weather.question_weather":
+                    foundMatchingIntent = WeatherQuestionIntentCommand.TryGetCommand(result, out command);
                     break;
 
                 case "TaskUpdate":
