@@ -11,7 +11,7 @@ namespace Bot_Application1
 
         static ToDoItemsManager()
         {
-            executeReminderTimer = new Timer(ToDoItemsManager.TimerCallBackMethod, null, 10 * 1000, 5 * 60 * 1000);
+            executeReminderTimer = new Timer(ToDoItemsManager.TimerCallBackMethod, null, 10 * 1000, Constants.RemindTimerInterval.Milliseconds);
         }
 
         public static void TimerCallBackMethod(object state)

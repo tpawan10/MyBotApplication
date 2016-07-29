@@ -63,7 +63,10 @@ namespace Bot_Application1
         public static IEnumerable<ToDoItem> GetAllToDoItemsToRemind(DateTime timeNow)
         {
             TableQuery<ToDoItem> query = new TableQuery<ToDoItem>()
-                .Where(TableQuery.GenerateFilterCondition("NextRemind", QueryComparisons.LessThanOrEqual, timeNow.ToString(CultureInfo.InvariantCulture)));
+                .Where(TableQuery.GenerateFilterConditionForDate(
+                    "NextRemind",
+                    QueryComparisons.LessThanOrEqual,
+                    timeNow.Add(Constants.RemindTimerInterval)));
 
             return toDoTable.ExecuteQuery(query);
         }
