@@ -60,3 +60,5 @@
 /Bot Application1/bin
 /BotTests/obj/Debug
 /BotTests/bin/Debug
+Bot Application1/bin/Bot Application1.dll
+*.dll
