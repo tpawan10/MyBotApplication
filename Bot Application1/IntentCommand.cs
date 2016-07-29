@@ -99,12 +99,27 @@ namespace Bot_Application1
 
     public class SimpleQuestionIntentCommand : IntentCommand
     {
-        private readonly string question;
-        private readonly string who;
-        private readonly string noun;
-        private readonly string verb;
+        public string question;
+        public string who;
+        public string noun;
+        public string verb;
 
-        public SimpleQuestionIntentCommand(LuisResult luisResult)
+        public static bool TryGetCommand(LuisResult result, out IntentCommand command)
+        {
+            try
+            {
+                command = new SimpleQuestionIntentCommand(result);
+                return true;
+            }
+            catch (InvalidOperationException)
+            {
+                command = null;
+            }
+
+            return false;
+        }
+
+        private SimpleQuestionIntentCommand(LuisResult luisResult)
         {
             foreach (EntityRecommendation entity in luisResult.Entities)
             {
@@ -126,6 +141,11 @@ namespace Bot_Application1
                         this.noun = entity.Entity;
                         break;
                 }
+            }
+
+            if (this.question == null || (this.who == null) || (this.verb == null && this.noun == null))
+            {
+                throw new InvalidOperationException();
             }
         }
 

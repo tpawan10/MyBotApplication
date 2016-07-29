@@ -80,8 +80,7 @@ namespace Bot_Application1
                     break;
 
                 case "AskingSimpleQuestion":
-                    foundMatchingIntent = true;
-                    command = new SimpleQuestionIntentCommand(result);
+                    foundMatchingIntent = SimpleQuestionIntentCommand.TryGetCommand(result, out command);
                     break;
 
                 case "None":
