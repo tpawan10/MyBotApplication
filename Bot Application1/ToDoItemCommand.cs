@@ -183,7 +183,11 @@ namespace Bot_Application1
                      || intents.Count == 0
                      || !intents[0].Intent.Equals(
                          "builtin.intent.reminder.create_single_reminder",
-                         StringComparison.InvariantCultureIgnoreCase));
+                         StringComparison.InvariantCultureIgnoreCase)
+                     || !intents[0].Intent.Equals(
+                         "builtin.intent.weather.check_weather",
+                         StringComparison.InvariantCultureIgnoreCase)
+                         );
         }
     }
 

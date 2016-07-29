@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder.Luis.Models;
+using System.Web.Services.Description;
 
 namespace Bot_Application1
 {
@@ -15,6 +16,49 @@ namespace Bot_Application1
     {
         public abstract Task<string> Execute();
     }
+
+    public class WeatherIntentCommand : IntentCommand
+    {
+        private string userName;
+        private string message;
+        private LuisResult luisResult;
+        string feature;
+
+        private static Random random = new Random();
+
+        public WeatherIntentCommand(string userName, string message, LuisResult luisResult)
+        {
+            this.userName = userName;
+            this.message = message;
+            this.luisResult = luisResult;
+            feature = GetWeatherFeature(message);
+        }
+
+        private string GetWeatherFeature(string message)
+        {
+            feature = string.Empty;
+            if (message.Contains("forecast || feel"))
+                feature = "forecast";
+            if (message.Contains("yesterday"))
+                feature = "yesterday";
+            if(string.IsNullOrEmpty(feature))
+                feature = "conditions";
+
+            return feature;
+        }
+
+        public override async Task<string> Execute()
+        {
+            var weatherMessage = await Weather.GetCurrentWeather(luisResult.Entities[0].Entity, feature);
+            if (weatherMessage != null)
+            {
+                return weatherMessage;
+            }
+
+            return "Sorry, I don't understand.";
+        }
+    }
+
 
     public class GreetingIntentCommand : IntentCommand
     {

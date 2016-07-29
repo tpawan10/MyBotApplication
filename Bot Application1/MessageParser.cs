@@ -62,6 +62,11 @@ namespace Bot_Application1
                     foundMatchingIntent = CreateToDoCommand.TryGetCommand(userId, message, serviceUri, from, recipient, result, out command);
                     break;
 
+                case "builtin.intent.weather.check_weather":
+                    foundMatchingIntent = true;
+                    command = new WeatherIntentCommand(userId, message, result);
+                    break;
+
                 case "TaskUpdate":
                     foundMatchingIntent = MessageParser.TryGetCommand(userId, message, result, out command);
                     break;
