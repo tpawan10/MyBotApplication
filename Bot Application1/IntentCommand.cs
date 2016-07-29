@@ -4,10 +4,10 @@
 // </copyright>
 // ---------------------------------------------------------------------------
 
+using Microsoft.Bot.Builder.Luis.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.Bot.Builder.Luis.Models;
 using System.Web.Services.Description;
 
 namespace Bot_Application1
@@ -22,7 +22,7 @@ namespace Bot_Application1
         private string userName;
         private string message;
         private LuisResult luisResult;
-        string feature;
+        private string feature;
 
         private static Random random = new Random();
 
@@ -41,7 +41,7 @@ namespace Bot_Application1
                 feature = "forecast";
             if (message.Contains("yesterday"))
                 feature = "yesterday";
-            if(string.IsNullOrEmpty(feature))
+            if (string.IsNullOrEmpty(feature))
                 feature = "conditions";
 
             return feature;
@@ -58,7 +58,6 @@ namespace Bot_Application1
             return "Sorry, I don't understand.";
         }
     }
-
 
     public class GreetingIntentCommand : IntentCommand
     {
