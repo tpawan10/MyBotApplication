@@ -129,6 +129,7 @@
     <Compile Include="ToDoItemCommand.cs" />
     <Compile Include="ToDoItems.cs" />
     <Compile Include="ToDoItemsManager.cs" />
+    <Compile Include="Weather.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
