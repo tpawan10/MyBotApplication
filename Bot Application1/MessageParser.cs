@@ -42,7 +42,7 @@ namespace Bot_Application1
                 return command;
             }
 
-            return new NoOpCommand(userId);
+            return new NoOpCommand(result);
         }
 
         private static bool TryGetCommand(string userId,
@@ -85,7 +85,7 @@ namespace Bot_Application1
                     break;
 
                 case "None":
-                    command = new NoOpCommand(userId);
+                    command = new NoOpCommand(result);
                     break;
             }
 

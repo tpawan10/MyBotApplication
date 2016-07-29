@@ -15,6 +15,7 @@ namespace Bot_Application1
     public class StorageManager
     {
         private static readonly CloudTable toDoTable;
+        private static readonly CloudTable unhandledDataTable;
 
         static StorageManager()
         {
@@ -22,6 +23,9 @@ namespace Bot_Application1
             CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
             toDoTable = tableClient.GetTableReference("ToDoItems");
             toDoTable.CreateIfNotExists();
+
+            unhandledDataTable = tableClient.GetTableReference("UnhandledQueries");
+            unhandledDataTable.CreateIfNotExists();
         }
 
         public static IEnumerable<ToDoItem> GetAllToDoItemsForUser(string userId)
@@ -48,6 +52,12 @@ namespace Bot_Application1
         {
             TableOperation addOperation = TableOperation.Insert(item);
             toDoTable.ExecuteAsync(addOperation);
+        }
+
+        public static void InsertOrReplaceUnhandledQueryEntity(UnhandledCommandsEntity entity)
+        {
+            TableOperation insertOrMergeOperation = TableOperation.InsertOrMerge(entity);
+            unhandledDataTable.ExecuteAsync(insertOrMergeOperation);
         }
 
         public static IEnumerable<ToDoItem> GetAllToDoItemsToRemind(DateTime timeNow)

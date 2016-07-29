@@ -28,14 +28,18 @@ namespace Bot_Application1
         }
     }
 
-    public class NoOpCommand : ToDoItemCommand
+    public class NoOpCommand : IntentCommand
     {
-        public NoOpCommand(string userId) : base(userId)
+        private UnhandledCommandsEntity unhandledQuery;
+
+        public NoOpCommand(LuisResult result)
         {
+            this.unhandledQuery = new UnhandledCommandsEntity(result);
         }
 
         public override Task<string> Execute()
         {
+            StorageManager.InsertOrReplaceUnhandledQueryEntity(this.unhandledQuery);
             return MessageParser.GetAwaitable("I did not understand your command.");
         }
     }
