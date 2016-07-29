@@ -1,13 +1,7 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Web;
-using System.Xml;
+using Newtonsoft.Json.Linq;
 
 namespace Bot_Application1
 {
@@ -40,6 +34,7 @@ namespace Bot_Application1
                             return $"There is more than one '{location}'. Can you be more specific?";
                         }
                         break;
+
                     case "forecast":
                         dynamic forecast = response.forecast;
                         results = response.response.results;
@@ -58,7 +53,6 @@ namespace Bot_Application1
                 }
                 return null;
             }
-
         }
     }
 }

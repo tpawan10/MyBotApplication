@@ -21,7 +21,7 @@ namespace Bot_Application1
                 ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
 
                 MessageParser parser = new MessageParser();
-                IntentCommand command = await parser.GetTaskReminder(
+                IntentCommand command = await parser.GetIntentCommand(
                     string.Format("{0}_{1}", activity.From.Id, activity.ChannelId),
                     activity.Text,
                     activity.ServiceUrl,

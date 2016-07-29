@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder.Luis;
@@ -23,7 +22,7 @@ namespace Bot_Application1
             MessageParser.MyAppService = new LuisService(new LuisModelAttribute("72e18abc-39ba-4f8c-aeee-e5ea9719b88c", "830b9b434d73481492b5dadc9be1f279"));
         }
 
-        public async Task<IntentCommand> GetTaskReminder(
+        public async Task<IntentCommand> GetIntentCommand(
             string userId,
             string message,
             string serviceUri,
@@ -43,7 +42,7 @@ namespace Bot_Application1
                 return command;
             }
 
-            return new NoOpCommand(userId, message);
+            return new NoOpCommand(userId);
         }
 
         private static bool TryGetCommand(string userId,
@@ -64,7 +63,7 @@ namespace Bot_Application1
 
                 case "builtin.intent.weather.check_weather":
                     foundMatchingIntent = true;
-                    command = new WeatherIntentCommand(userId, message, result);
+                    command = new WeatherIntentCommand(message, result);
                     break;
 
                 case "TaskUpdate":
@@ -87,34 +86,9 @@ namespace Bot_Application1
                     break;
 
                 case "None":
-                    command = new NoOpCommand(userId, message);
+                    command = new NoOpCommand(userId);
                     break;
             }
-
-            //if (message.StartsWith("!Done: ", StringComparison.InvariantCultureIgnoreCase))
-            //{
-            //    return new DoneToDoCommands(userId, GetDoneToDoItemsFromMessage(message.Substring("!Done: ".Length)));
-            //}
-            //if (message.StartsWith("!Remove: ", StringComparison.InvariantCultureIgnoreCase))
-            //{
-            //    return new RemoveToDoCommands(
-            //        userId, GetDoneToDoItemsFromMessage(message.Substring("!Remove: ".Length)));
-            //}
-            //if (message.StartsWith("!Show done", StringComparison.InvariantCultureIgnoreCase))
-            //{
-            //    return new ShowToDoCommand(userId, ToDoItemStatus.Done);
-            //}
-            //if (message.StartsWith("!Show", StringComparison.InvariantCultureIgnoreCase))
-            //{
-            //    return new ShowToDoCommand(userId, ToDoItemStatus.Pending);
-            //}
-
-            //return await CreateToDoCommand.GetCommand(
-            //    userId,
-            //    message,
-            //    serviceUri,
-            //    from,
-            //    recipient);
 
             return foundMatchingIntent;
         }
@@ -153,19 +127,11 @@ namespace Bot_Application1
             return false;
         }
 
-        private List<int> GetDoneToDoItemsFromMessage(string messageSubString)
+        public static Task<T> GetAwaitable<T>(T itemToreturn)
         {
-            List<int> indexes = new List<int>();
-
-            foreach (string s in messageSubString.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-            {
-                int i;
-                if (int.TryParse(s.Trim(), out i))
-                {
-                    indexes.Add(i - 1);
-                }
-            }
-            return indexes;
+            Task<T> task = new Task<T>(() => itemToreturn);
+            task.Start();
+            return task;
         }
     }
 }

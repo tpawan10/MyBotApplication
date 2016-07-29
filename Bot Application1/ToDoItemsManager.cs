@@ -9,6 +9,7 @@ namespace Bot_Application1
     public class ToDoItemsManager
     {
         public static Dictionary<string, List<ToDoItem>> toDoItemsCollection;
+        public static object todoItemsCollectionLock = new object();
 
         public static Timer executeReminderTimer;
 
@@ -41,6 +42,9 @@ namespace Bot_Application1
                 message.Text = "You need to: " + item.Title;
                 message.Locale = "en-Us";
                 connector.Conversations.SendToConversation((Activity)message);
+
+                // Update item.
+                StorageManager.UpdateToDoItem(item);
             }
         }
 
@@ -61,38 +65,39 @@ namespace Bot_Application1
 
         public static void AddToDoItem(string userId, ToDoItem item)
         {
-            List<ToDoItem> items;
-            if (!toDoItemsCollection.TryGetValue(userId, out items) || items == null)
-            {
-                items = new List<ToDoItem>();
-            }
+            List<ToDoItem> items = ToDoItemsManager.GetToDoItemsForUser(userId);
+            StorageManager.InsertItem(item);
 
             items.Add(item);
             toDoItemsCollection[userId] = items;
         }
 
-        public static void RemoveItems(string userId, IEnumerable<ToDoItem> itemsToRemove)
+        public static List<ToDoItem> GetToDoItemsForUser(string userId)
         {
             List<ToDoItem> items;
             if (!toDoItemsCollection.TryGetValue(userId, out items) || items == null)
             {
-                items = new List<ToDoItem>();
+                lock (todoItemsCollectionLock)
+                {
+                    if (!toDoItemsCollection.TryGetValue(userId, out items) || items == null)
+                    {
+                        items = StorageManager.GetAllToDoItemsForUser(userId).ToList();
+                        toDoItemsCollection[userId] = items;
+                    }
+                }
             }
 
+            return items;
+        }
+
+        public static void RemoveItems(string userId, IEnumerable<ToDoItem> itemsToRemove)
+        {
+            List<ToDoItem> items = ToDoItemsManager.GetToDoItemsForUser(userId);
             foreach (ToDoItem item in itemsToRemove)
             {
                 items.Remove(item);
+                StorageManager.RemoveItem(item);
             }
-        }
-
-        public static IEnumerable<ToDoItem> GetToDoItemsForUser(string userId, ToDoItemStatus status = ToDoItemStatus.Pending)
-        {
-            List<ToDoItem> items;
-            if (!toDoItemsCollection.TryGetValue(userId, out items))
-            {
-                items = new List<ToDoItem>();
-            }
-            return items.Where(item => item.Status.Equals(status));
         }
     }
 }

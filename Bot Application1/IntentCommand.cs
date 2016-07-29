@@ -4,11 +4,10 @@
 // </copyright>
 // ---------------------------------------------------------------------------
 
-using Microsoft.Bot.Builder.Luis.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Web.Services.Description;
+using Microsoft.Bot.Builder.Luis.Models;
 
 namespace Bot_Application1
 {
@@ -19,17 +18,11 @@ namespace Bot_Application1
 
     public class WeatherIntentCommand : IntentCommand
     {
-        private string userName;
-        private string message;
         private LuisResult luisResult;
         private string feature;
 
-        private static Random random = new Random();
-
-        public WeatherIntentCommand(string userName, string message, LuisResult luisResult)
+        public WeatherIntentCommand(string message, LuisResult luisResult)
         {
-            this.userName = userName;
-            this.message = message;
             this.luisResult = luisResult;
             feature = GetWeatherFeature(message);
         }
@@ -61,9 +54,9 @@ namespace Bot_Application1
 
     public class GreetingIntentCommand : IntentCommand
     {
-        private string userName;
+        private readonly string userName;
 
-        private static string[] Greetings = new string[]
+        private static readonly string[] Greetings = new string[]
         {
             "hello {0} :)",
             "Howdie {0}",
@@ -72,7 +65,7 @@ namespace Bot_Application1
             "Great to see you {0}!!!!"
         };
 
-        private static Random random = new Random();
+        private static readonly Random random = new Random();
 
         public GreetingIntentCommand(string userName)
         {
@@ -89,10 +82,10 @@ namespace Bot_Application1
 
     public class SimpleQuestionIntentCommand : IntentCommand
     {
-        private string question;
-        private string who;
-        private string noun;
-        private string verb;
+        private readonly string question;
+        private readonly string who;
+        private readonly string noun;
+        private readonly string verb;
 
         public SimpleQuestionIntentCommand(LuisResult luisResult)
         {
