@@ -62,8 +62,7 @@ namespace Bot_Application1
                     break;
 
                 case "builtin.intent.weather.check_weather":
-                    foundMatchingIntent = true;
-                    command = new WeatherIntentCommand(message, result);
+                    foundMatchingIntent = foundMatchingIntent = WeatherIntentCommand.TryGetCommand(message, result, out command);
                     break;
 
                 case "TaskUpdate":

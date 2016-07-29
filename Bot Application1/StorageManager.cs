@@ -4,7 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------
 
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 
@@ -46,6 +48,14 @@ namespace Bot_Application1
         {
             TableOperation addOperation = TableOperation.Insert(item);
             toDoTable.ExecuteAsync(addOperation);
+        }
+
+        public static IEnumerable<ToDoItem> GetAllToDoItemsToRemind(DateTime timeNow)
+        {
+            TableQuery<ToDoItem> query = new TableQuery<ToDoItem>()
+                .Where(TableQuery.GenerateFilterCondition("NextRemind", QueryComparisons.LessThanOrEqual, timeNow.ToString(CultureInfo.InvariantCulture)));
+
+            return toDoTable.ExecuteQuery(query);
         }
     }
 }

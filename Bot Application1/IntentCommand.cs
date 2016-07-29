@@ -21,7 +21,24 @@ namespace Bot_Application1
         private LuisResult luisResult;
         private string feature;
 
-        public WeatherIntentCommand(string message, LuisResult luisResult)
+        public static bool TryGetCommand(string message, LuisResult result, out IntentCommand command)
+        {
+            if (WeatherIntentCommand.ValidateIntent(result.Intents))
+            {
+                command = new WeatherIntentCommand(message, result);
+                return true;
+            }
+
+            command = null;
+            return false;
+        }
+
+        private static bool ValidateIntent(IList<IntentRecommendation> intents)
+        {
+            return intents != null && intents.Count != 0 && intents[0].Intent == "builtin.intent.weather.check_weather";
+        }
+
+        private WeatherIntentCommand(string message, LuisResult luisResult)
         {
             this.luisResult = luisResult;
             feature = GetWeatherFeature(message);

@@ -27,5 +27,11 @@ namespace BotTests
             ToDoItem[] result = StorageManager.GetAllToDoItemsForUser(guid).ToArray();
             Assert.AreEqual(result.Length, 1);
         }
+
+        [TestMethod]
+        public void GetAlltoDoOperationToRemind()
+        {
+            StorageManager.GetAllToDoItemsToRemind(DateTime.Now);
+        }
     }
 }

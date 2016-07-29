@@ -176,15 +176,7 @@ namespace Bot_Application1
 
         private static bool ValidateIntent(IList<IntentRecommendation> intents)
         {
-            return !(intents == null
-                     || intents.Count == 0
-                     || !intents[0].Intent.Equals(
-                         "builtin.intent.reminder.create_single_reminder",
-                         StringComparison.InvariantCultureIgnoreCase)
-                     || !intents[0].Intent.Equals(
-                         "builtin.intent.weather.check_weather",
-                         StringComparison.InvariantCultureIgnoreCase)
-                         );
+            return intents != null && intents.Count != 0 && intents[0].Intent == "builtin.intent.reminder.create_single_reminder";
         }
     }
 
@@ -199,23 +191,21 @@ namespace Bot_Application1
 
         public override async Task<string> Execute()
         {
-            ToDoItem[] items = ToDoItemsManager.GetToDoItemsForUser(this.UserId).ToArray();
+            IEnumerable<ToDoItem> items = StorageManager.GetAllToDoItemsForUser(this.UserId);
 
-            if (items.Length != 0)
+            int index = 1;
+            StringBuilder sb = new StringBuilder();
+
+            foreach (ToDoItem item in items)
             {
-                StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < items.Length; i++)
-                {
-                    sb.AppendFormat(
-                        "{2}Item {0}: {1}\n\n",
-                        i + 1,
-                        items[i].Title,
-                        items[i].Status == ToDoItemStatus.Done ? "#" : string.Empty);
-                }
-                return await MessageParser.GetAwaitable(sb.ToString());
+                sb.AppendFormat(
+                    "{2}Item {0}: {1}\n\n",
+                    index++,
+                    item.Title,
+                    item.Status == ToDoItemStatus.Done ? "#" : string.Empty);
             }
 
-            return await MessageParser.GetAwaitable("#No task found");
+            return await MessageParser.GetAwaitable(sb.ToString() == string.Empty ? "#No task found" : sb.ToString());
         }
     }
 
@@ -225,7 +215,7 @@ namespace Bot_Application1
 
         public DoneToDoCommands(string userId, IEnumerable<int> itemsCompletedIndex) : base(userId)
         {
-            ToDoItem[] items = ToDoItemsManager.GetToDoItemsForUser(this.UserId).ToArray();
+            ToDoItem[] items = StorageManager.GetAllToDoItemsForUser(this.UserId).ToArray();
             itemsCompleted = new List<ToDoItem>();
             foreach (int itemIndex in itemsCompletedIndex.Where(i => i >= 1 && i <= items.Length))
             {
@@ -252,7 +242,7 @@ namespace Bot_Application1
         public RemoveToDoCommands(string userId, IEnumerable<int> itemsToRemoveIndex) : base(userId)
         {
             itemsToRemove = new List<ToDoItem>();
-            ToDoItem[] items = ToDoItemsManager.GetToDoItemsForUser(this.UserId).ToArray();
+            ToDoItem[] items = StorageManager.GetAllToDoItemsForUser(this.UserId).ToArray();
 
             foreach (int itemIndex in itemsToRemoveIndex.Where(i => i >= 1 && i <= items.Length))
             {
