@@ -105,7 +105,7 @@ namespace Bot_Application1
                         .Select(e => e.Resolution);
 
                 DateTime? finalDateTime = null;
-                TimeSpan frequency = TimeSpan.MaxValue;
+                int frequency = -1;
 
                 var setDate = resolutions.Where(r => r["resolution_type"].Equals("builtin.datetime.set")).ToArray();
                 if (setDate.Length != 0)
@@ -114,8 +114,8 @@ namespace Bot_Application1
                     if (setDate[0]["set"].Equals("xxxx-xx-xx", StringComparison.OrdinalIgnoreCase))
                     {
                         finalDateTime = DateTime.Today.AddHours(8);
-                        frequency = TimeSpan.FromDays(1);
-                        expectedItem = new ToDoItem(userId, text, finalDateTime.Value, frequency);
+                        frequency = TimeSpan.FromDays(1).Minutes;
+                        expectedItem = new ToDoItem(userId, text, frequency, finalDateTime.Value);
                         return true;
                     }
                     if (setDate[0]["set"].StartsWith("xxxx-xx-xx", StringComparison.OrdinalIgnoreCase))
@@ -123,8 +123,8 @@ namespace Bot_Application1
                         if (TryParseHourAndMinute(setDate[0]["set"], out hours, out mins))
                         {
                             finalDateTime = DateTime.Today.AddHours(hours).AddMinutes(mins);
-                            frequency = TimeSpan.FromDays(1);
-                            expectedItem = new ToDoItem(userId, text, finalDateTime.Value, frequency);
+                            frequency = TimeSpan.FromDays(1).Minutes;
+                            expectedItem = new ToDoItem(userId, text, frequency, finalDateTime.Value);
                             return true;
                         }
                     }
@@ -155,7 +155,7 @@ namespace Bot_Application1
                     }
                 }
 
-                expectedItem = new ToDoItem(userId, text, finalDateTime.Value, frequency);
+                expectedItem = new ToDoItem(userId, text, frequency, finalDateTime.Value);
                 return true;
             }
 
@@ -206,7 +206,7 @@ namespace Bot_Application1
                     "{2}Item {0}: {1}\n\n",
                     index++,
                     item.Title,
-                    item.Status == ToDoItemStatus.Done ? "#" : string.Empty);
+                    item.Status == ToDoItemStatus.Done.ToString() ? "#" : string.Empty);
             }
 
             return await MessageParser.GetAwaitable(sb.ToString() == string.Empty ? "#No task found" : sb.ToString());

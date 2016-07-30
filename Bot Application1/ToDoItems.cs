@@ -15,7 +15,7 @@ namespace Bot_Application1
     public enum ToDoItemStatus
     {
         Pending,
-        Done,
+        Done
     }
 
     public class CommunicationInfo
@@ -32,11 +32,23 @@ namespace Bot_Application1
 
     public class ToDoItem : TableEntity
     {
+        private ToDoItemStatus status;
+
         public string Title { get; set; }
 
-        public ToDoItemStatus Status { get; set; }
+        public string Status
+        {
+            get { return this.status.ToString(); }
+            set
+            {
+                if (!Enum.TryParse(value, out this.status))
+                {
+                    throw new InvalidOperationException();
+                }
+            }
+        }
 
-        public TimeSpan RemindInterval { get; set; }
+        public int RemindIntervalInMins { get; set; }
 
         public DateTime NextRemind { get; set; }
 
@@ -70,37 +82,39 @@ namespace Bot_Application1
         {
         }
 
-        public ToDoItem(string userId, string title) : this(userId, title, TimeSpan.MaxValue)
+        public ToDoItem(string userId, string title) : this(userId, title, -1)
         {
         }
 
-        public ToDoItem(string userId, string title, TimeSpan remindInterval)
-                : this(userId, title, remindInterval, DateTime.Now.Add(remindInterval))
+        public ToDoItem(string userId, string title, int remindIntervalInMins)
+                : this(userId, title, remindIntervalInMins, ToDoItem.GetNextRemindTime(DateTime.Now, remindIntervalInMins))
         {
         }
 
-        public ToDoItem(string userId, string title, DateTime nextRemind, TimeSpan remindInterval)
-                : this(userId, title, remindInterval, nextRemind)
-        {
-        }
-
-        private ToDoItem(string userId, string title, TimeSpan remindInterval, DateTime nextRemind, ToDoItemStatus status = ToDoItemStatus.Pending)
+        public ToDoItem(string userId, string title, int remindIntervalInMins, DateTime nextRemind, ToDoItemStatus status = ToDoItemStatus.Pending)
         : base(userId, DateTime.Now.ToString(CultureInfo.CurrentCulture))
         {
             this.Title = title;
-            this.Status = status;
-            this.RemindInterval = remindInterval;
+            this.status = status;
+            this.RemindIntervalInMins = remindIntervalInMins;
             this.NextRemind = nextRemind;
         }
 
         public void UpdateStatus(ToDoItemStatus status)
         {
-            this.Status = status;
+            this.status = status;
         }
 
         public void SetNextRemind()
         {
-            this.NextRemind = this.RemindInterval == TimeSpan.MaxValue ? DateTime.MaxValue : this.NextRemind.Add(this.RemindInterval);
+            this.NextRemind = ToDoItem.GetNextRemindTime(this.NextRemind, this.RemindIntervalInMins);
+        }
+
+        public static DateTime GetNextRemindTime(DateTime originalDateTime, int remindIntervalInMins)
+        {
+            return remindIntervalInMins == -1
+                ? DateTime.MaxValue
+                : originalDateTime.Add(TimeSpan.FromMinutes(remindIntervalInMins));
         }
 
         public void SetCommunicationInformation(string url, ChannelAccount from, ChannelAccount recipient)

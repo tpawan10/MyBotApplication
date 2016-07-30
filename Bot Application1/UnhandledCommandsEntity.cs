@@ -1,4 +1,5 @@
-﻿using Microsoft.Bot.Builder.Luis.Models;
+﻿using Microsoft.Bot.Builder.Luis;
+using Microsoft.Bot.Builder.Luis.Models;
 using Microsoft.WindowsAzure.Storage.Table;
 using Newtonsoft.Json;
 

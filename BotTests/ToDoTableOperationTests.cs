@@ -14,7 +14,7 @@ namespace BotTests
         {
             string guid = Guid.NewGuid().ToString();
             TimeSpan timeSpan = TimeSpan.FromSeconds(3);
-            ToDoItem item = new ToDoItem(guid, "This is a test.", timeSpan);
+            ToDoItem item = new ToDoItem(guid, "This is a test.", timeSpan.Minutes);
             item.SetCommunicationInformation(
                 new CommunicationInfo()
                 {
