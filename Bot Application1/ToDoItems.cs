@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------
 
 using System;
-using System.Globalization;
 using Microsoft.Bot.Connector;
 using Microsoft.WindowsAzure.Storage.Table;
 using Newtonsoft.Json;
@@ -92,7 +91,7 @@ namespace Bot_Application1
         }
 
         public ToDoItem(string userId, string title, int remindIntervalInMins, DateTime nextRemind, ToDoItemStatus status = ToDoItemStatus.Pending)
-        : base(userId, DateTime.Now.ToString(CultureInfo.CurrentCulture))
+        : base(userId, DateTime.Now.ToBinary().ToString())
         {
             this.Title = title;
             this.status = status;

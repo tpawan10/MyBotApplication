@@ -84,8 +84,8 @@ namespace Bot_Application1
 
         public override async Task<string> Execute()
         {
-            ToDoItemsManager.AddToDoItem(this.UserId, this.itemToAdd);
-            return await MessageParser.GetAwaitable(this.itemToAdd.Title + " was added");
+            ToDoItemsManager.AddToDoItem(this.itemToAdd);
+            return await MessageParser.GetAwaitable(this.itemToAdd.Title + " was added.");
         }
 
         private static bool TryCreateToDoItem(string userId, IList<EntityRecommendation> entities, out ToDoItem expectedItem)

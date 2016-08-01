@@ -53,7 +53,7 @@ namespace Bot_Application1
             return itemsToRemind;
         }
 
-        public static void AddToDoItem(string userId, ToDoItem item)
+        public static void AddToDoItem(ToDoItem item)
         {
             StorageManager.InsertItem(item);
         }
